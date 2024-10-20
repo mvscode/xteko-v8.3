@@ -1,4 +1,3 @@
-
 var languageKv = {
   "de-DE": "de",
   "en-US": "en",
@@ -14,8 +13,8 @@ var languageKv = {
 };
 $app.strings = {
   "zh-Hans": {
-    "undefined": "未知",
-    "auto": "自动",
+    undefined: "未知",
+    auto: "自动",
     "de-DE": "德语",
     "en-US": "英语(美国)",
     "en-GB": "英语(英国)",
@@ -84,11 +83,17 @@ function transUI() {
                 $("mainbg").remove();
                 var dataManager = require("../data-manager");
                 dataManager.init(mode);
-                var path = $app.env == $env.app ? "scripts/app" : "scripts/widget";
+                var path =
+                  $app.env == $env.app ? "scripts/app" : "scripts/widget";
                 var module = require(path);
                 module.init(mode);
-                $("input").text = $clipboard.text||"轻点输入.."
-                $("input").textColor = $clipboard.text ==undefined ?$color("gray"):($clipboard.text.indexOf("\n")>=0?$color("#325793"):$color("black"))
+                $("input").text = $clipboard.text || "轻点输入..";
+                $("input").textColor =
+                  $clipboard.text == undefined
+                    ? $color("gray")
+                    : $clipboard.text.indexOf("\n") >= 0
+                    ? $color("#325793")
+                    : $color("black");
               }
             }
           },
@@ -166,7 +171,7 @@ function transUI() {
                     type: "text",
                     props: {
                       id: "originput",
-                      font: $font(14),
+                      font: $font(12),
                       bgcolor: $color("clear")
                     },
                     layout: function(make, view) {
@@ -202,26 +207,36 @@ function transUI() {
                     props: {
                       id: "transinput",
                       editable: false,
-                      font: $font(14),
-                      bgcolor: $color("clear")
+                      font: $font(12),
+                      bgcolor: $color("clear"),
+                      //textColor: $color("white")
                     },
                     layout: function(make, view) {
                       make.left.right.top.inset(0);
                       make.bottom.inset(5);
                     }
-                  },{
-                    type: "text",
+                  },
+                  {
+                    type: "button",
                     props: {
                       id: "Pinyin",
-                      editable: false,
+                      //editable: false,
                       font: $font(12),
                       bgcolor: $color("clear"),
-                      textColor:$color("gray")
+                      titleColor: $color("#aaaaaa"),
+                      align:"left"
                     },
                     layout: function(make, view) {
-                      make.left.right.inset(0);
-                      make.top.inset(135)
-                      make.bottom.inset(5);
+                      make.left.inset(8);
+                      make.top.inset(135);
+                      make.bottom.inset(0);
+                    },
+                    events: {
+                      tapped: function(sender) {
+                          $clipboard.text = sender.title.trim()
+                          $ui.toast("已复制拼音",1)
+                        
+                      }
                     }
                   }
                 ]
@@ -251,45 +266,47 @@ function transUI() {
                 events: {
                   tapped(sender) {
                     var ttext = $("transinput").text;
-                    $device.taptic(0)
+                    $device.taptic(0);
                     if (ttext == "") {
                       return;
                     } else {
                       $clipboard.set({
-                        "type": "public.plain-text",
-                        "value": ttext
+                        type: "public.plain-text",
+                        value: ttext
                       });
                       $("mainbg").remove();
-                      $widget.height=181
-                                      var dataManager = require("../data-manager");
-                                      dataManager.init(mode);
-                                      var path = $app.env == $env.app ? "scripts/app" : "scripts/widget";
-                                      var module = require(path);
-                                      module.init(mode);
-                                      $("input").text = $clipboard.text
-                                      $ui.toast("翻译结果已复制",0.3)
+                      $widget.height = 181;
+                      var dataManager = require("../data-manager");
+                      dataManager.init(mode);
+                      var path =
+                        $app.env == $env.app ? "scripts/app" : "scripts/widget";
+                      var module = require(path);
+                      module.init(mode);
+                      $("input").text = $clipboard.text;
+                      $ui.toast("翻译结果已复制", 0.3);
                     }
                   },
-                  longPressed(sender){
-                    $device.taptic(0)
-                    var ttext = $("Pinyin").text;
-                                        if (ttext == "") {
-                                          return;
-                                        } else {
-                                          $clipboard.set({
-                                            "type": "public.plain-text",
-                                            "value": ttext
-                                          });
-                                          $("mainbg").remove();
-                                          $widget.height=181
-                                                          var dataManager = require("../data-manager");
-                                                          dataManager.init(mode);
-                                                          var path = $app.env == $env.app ? "scripts/app" : "scripts/widget";
-                                                          var module = require(path);
-                                                          module.init(mode);
-                                                          $("input").text = $clipboard.text
-                                                          $ui.toast("翻译结果已复制",0.3)
-                                        }
+                  longPressed(sender) {
+                    $device.taptic(0);
+                    var ttext = $("Pinyin").title;
+                    if (ttext == "") {
+                      return;
+                    } else {
+                      $clipboard.set({
+                        type: "public.plain-text",
+                        value: ttext
+                      });
+                      $("mainbg").remove();
+                      $widget.height = 181;
+                      var dataManager = require("../data-manager");
+                      dataManager.init(mode);
+                      var path =
+                        $app.env == $env.app ? "scripts/app" : "scripts/widget";
+                      var module = require(path);
+                      module.init(mode);
+                      $("input").text = $clipboard.text;
+                      $ui.toast("翻译结果已复制", 0.3);
+                    }
                   }
                 }
               },
@@ -478,7 +495,6 @@ function transUI() {
       }
     ]
   });
-  
 }
 
 function gtrans(text) {
@@ -500,9 +516,9 @@ function cnTest() {
   var cn = new RegExp("[\u4e00-\u9fa5]+");
   var slang = cn.test($("originput").text);
   if (slang == 0) {
-     translang = "zh-CN";
+    translang = "zh-CN";
   } else {
-     translang = "en-US";
+    translang = "en-US";
   }
   return translang;
 }
@@ -511,61 +527,65 @@ function translate() {
   $ui.loading("Translating...");
   $http.request({
     method: "GET",
-    url: `https://translate.google.cn/translate_a/single?client=it&dt=t&dt=rmt&dt=bd&dt=rms&dt=qca&dt=ss&dt=md&dt=ld&dt=ex&otf=2&dj=1&q=${$text.URLEncode($("originput").text)}&hl=zh-CN&ie=UTF-8&oe=UTF-8&sl=${origLg}&tl=${transLg}`,
+    url: `https://translate.google.com.hk/translate_a/single?client=it&dt=t&dt=rmt&dt=bd&dt=rms&dt=qca&dt=ss&dt=md&dt=ld&dt=ex&otf=2&dj=1&q=${$text.URLEncode(
+      $("originput").text
+    )}&hl=zh-CN&ie=UTF-8&oe=UTF-8&sl=${origLg}&tl=${transLg}`,
     header: {
-                "User-Agent": "GoogleTranslate/5.27.59117 (iPhone; iOS 12.2; en; iPhone10,3)"
-            },
-//    url: "http://translate.google.cn/translate_a/single",
-//    header: {
-//      "User-Agent": "iOSTranslate",
-//      "Content-Type": "application/x-www-form-urlencoded"
-//    },
-//    body: {
-//      "dt": "t",
-//      "q": $("originput").text,
-//      "tl": transLg,
-//      "ie": "UTF-8",
-//      "sl": origLg,
-//      "client": "ia",
-//      "dj": "1"
-//    },
+      "User-Agent":
+        "GoogleTranslate/5.27.59117 (iPhone; iOS 12.2; en; iPhone10,3)"
+    },
+    //    url: "http://translate.google.cn/translate_a/single",
+    //    header: {
+    //      "User-Agent": "iOSTranslate",
+    //      "Content-Type": "application/x-www-form-urlencoded"
+    //    },
+    //    body: {
+    //      "dt": "t",
+    //      "q": $("originput").text,
+    //      "tl": transLg,
+    //      "ie": "UTF-8",
+    //      "sl": origLg,
+    //      "client": "ia",
+    //      "dj": "1"
+    //    },
     handler: function(resp) {
       $ui.loading(false);
-//      var data = resp.data.sentences;
+      //      var data = resp.data.sentences;
       var orig = "";
       var trans = "";
       var SPinyin = "";
-      var TPinyin = ""
-//      data.forEach(e => {
-//        orig = orig.concat(e.orig + "\n");
-//        //trans = trans.concat(e.trans + "\n");
-//        
-//      });
-       let results = resp.data
-       if (results.sentences) {
-              let sentences = results.sentences
-              let sentencesText = ""
-              let translitText = ""
-              let src_translitText = ""
-              for (let i in sentences) {
-                  orig = orig+sentences[i].orig +"\n"
-                  if (sentences[i].src_translit) {
-                      src_translitText = src_translitText + sentences[i].src_translit + "\n"
-                      SPinyin = src_translitText
-                  }
-                  if (sentences[i].translit) {
-                      translitText = translitText + sentences[i].translit + "\n"
-                      TPinyin = translitText
-                  }
-                  if (sentences[i].trans) {
-                      sentencesText = sentencesText + sentences[i].trans
-                      trans = sentencesText
-                  }
-              }
+      var TPinyin = "";
+      //      data.forEach(e => {
+      //        orig = orig.concat(e.orig + "\n");
+      //        //trans = trans.concat(e.trans + "\n");
+      //
+      //      });
+      let results = resp.data;
+      if (results.sentences) {
+        let sentences = results.sentences;
+        let sentencesText = "";
+        let translitText = "";
+        let src_translitText = "";
+        for (let i in sentences) {
+          orig = orig + sentences[i].orig + "\n";
+          if (sentences[i].src_translit) {
+            src_translitText =
+              src_translitText + sentences[i].src_translit + "\n";
+            SPinyin = src_translitText;
           }
-      if(SPinyin) $("Pinyin").text = SPinyin
-      else $("Pinyin").text = TPinyin
-//      $clipboard.text=JSON.stringify(data)
+          if (sentences[i].translit) {
+            translitText = translitText + sentences[i].translit + "\n";
+            TPinyin = translitText;
+          }
+          if (sentences[i].trans) {
+            sentencesText = sentencesText + sentences[i].trans;
+            trans = sentencesText;
+          }
+        }
+      }
+      if (SPinyin) $("Pinyin").title = SPinyin;
+      else $("Pinyin").title = TPinyin;
+      //      $clipboard.text=JSON.stringify(data)
       var src = results.src || results.sentences.src;
       if (src == "en" || src == "es" || src == "fr" || src == "pt") {
         if (origLg == "auto") {
